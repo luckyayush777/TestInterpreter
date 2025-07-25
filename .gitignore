@@ -1,0 +1,42 @@
+# === C++ Build Files ===
+*.o
+*.obj
+*.out
+*.exe
+*.a
+*.so
+*.dll
+*.dSYM/
+*.stackdump
+*.pch
+*.pdb
+*.class
+
+# === Executables ===
+repl
+test
+tests
+*.log
+
+# === Editor/IDE ===
+.vscode/
+*.code-workspace
+
+# === OS-Specific ===
+.DS_Store
+Thumbs.db
+
+# === Backup and Temporary ===
+*~
+*.swp
+*.tmp
+*.bak
+
+# === CMake or build systems (future proofing) ===
+CMakeFiles/
+CMakeCache.txt
+build/
+cmake-build-*/
+
+# === Compilation Database ===
+compile_commands.json
