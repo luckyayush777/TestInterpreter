@@ -9,7 +9,7 @@
 
 int main() {
 
-
+    //comment out the test cases in src/tests.cpp
     std::string line;
     while(true)
     {
