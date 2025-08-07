@@ -31,6 +31,8 @@ int main() {
             case TokenType::SLASH: std::cout << "SLASH"; break;
             case TokenType::LEFT_PAREN: std::cout << "LEFT_PAREN"; break;
             case TokenType::RIGHT_PAREN: std::cout << "RIGHT_PAREN"; break;
+            case TokenType::LEFT_BRACE: std::cout << "LEFT_BRACE"; break;
+            case TokenType::RIGHT_BRACE: std::cout << "RIGHT_BRACE"; break;
             case TokenType::END_OF_FILE: std::cout << "EOF"; break;
             case TokenType::INVALID: std::cout << "INVALID"; break;
             case TokenType::SEMICOLON: std::cout << "SEMICOLON"; break;
