@@ -13,6 +13,7 @@ enum class TokenType{
     INVALID,
     LEFT_PAREN,
     RIGHT_PAREN,
+    SEMICOLON,
     END_OF_FILE
 };
 struct Token {

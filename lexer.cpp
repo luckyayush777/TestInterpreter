@@ -32,6 +32,9 @@ std::vector<Token> Lexer::tokenize() {
             case ')':
                 tokens.emplace_back(TokenType::RIGHT_PAREN, ")");
                 break;
+            case ';':
+                tokens.emplace_back(TokenType::SEMICOLON, ";");
+                break;
             default:
                 if (isdigit(c) || (c == '.')) {
                     tokens.push_back(number(c));

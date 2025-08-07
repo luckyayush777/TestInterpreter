@@ -32,11 +32,13 @@ int main() {
             case TokenType::RIGHT_PAREN: std::cout << "RIGHT_PAREN"; break;
             case TokenType::END_OF_FILE: std::cout << "EOF"; break;
             case TokenType::INVALID: std::cout << "INVALID"; break;
+            case TokenType::SEMICOLON: std::cout << "SEMICOLON"; break;
+            default: std::cout << "UNKNOWN"; break;
         }
         std::cout << '\n';
     }
-    Parser parser(tokens);
-    std::unique_ptr<Expr> expr = parser.parse();
-    std::cout<< "Result: " << expr->evaluate() << '\n';
+    Parser parser(tokens); 
+    std::unique_ptr<Expr> expr = parser.parse(); // gives the AST
+    std::cout<< "Result: " << expr->evaluate() << '\n'; // Evaluate the expression
     }
 }

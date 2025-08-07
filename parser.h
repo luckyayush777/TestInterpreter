@@ -2,6 +2,7 @@
 #include <memory>
 #include"token.h"
 #include"expr.h"
+#include"stmt.h"
 
 class Parser{
     const std::vector<Token>& tokens;  
@@ -16,11 +17,22 @@ class Parser{
     }
 
     private :
+    std::unique_ptr<ExprStmt> parseExpressionStmt();
+    std::unique_ptr<Stmt> parseStatement();
     std::unique_ptr<Expr> parseExpression();
     std::unique_ptr<Expr> parseTerm();
     std::unique_ptr<Expr> parseFactor();
     bool match(TokenType type);
     bool check(TokenType type);
     bool isAtEnd() const;
+    Token consume(TokenType type, const std::string& errorMessage);
+
+
+    Token advance() {
+        if (!isAtEnd()) {
+            return tokens[current++];
+        }
+        return tokens.back(); // Return the last token (EOF)
+    }
     const Token& previous() const;
 };

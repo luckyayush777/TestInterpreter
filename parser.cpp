@@ -1,5 +1,21 @@
 #include"parser.h"
 
+
+
+
+std::unique_ptr<ExprStmt> Parser::parseExpressionStmt() {
+    auto expr = parseExpression();
+    consume(TokenType::SEMICOLON, "Expected ';' after expression");
+    return std::make_unique<ExprStmt>(std::move(expr));
+}
+
+std::unique_ptr<Stmt> Parser::parseStatement() {
+    if (match(TokenType::SEMICOLON)) {
+        return std::make_unique<ExprStmt>(nullptr); // Empty statement
+    }
+    return parseExpressionStmt();
+}
+
 std::unique_ptr<Expr> Parser::parseExpression() {
     auto left = parseTerm();
 
@@ -38,6 +54,13 @@ std::unique_ptr<Expr> Parser::parseFactor() {
     }
 
     throw std::runtime_error("Expected number or '('");
+}
+
+Token Parser::consume(TokenType type, const std::string& errorMessage) {
+    if (check(type)) {
+        return advance();
+    }
+    throw std::runtime_error(errorMessage + " Found: " + previous().lexeme);
 }
 
 bool Parser::match(TokenType type) {
