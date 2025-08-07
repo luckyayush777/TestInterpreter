@@ -32,6 +32,12 @@ std::vector<Token> Lexer::tokenize() {
             case ')':
                 tokens.emplace_back(TokenType::RIGHT_PAREN, ")");
                 break;
+            case '{':
+                tokens.emplace_back(TokenType::LEFT_BRACE, "{");
+                break;
+            case '}':
+                tokens.emplace_back(TokenType::RIGHT_BRACE, "}");
+                break;
             case ';':
                 tokens.emplace_back(TokenType::SEMICOLON, ";");
                 break;

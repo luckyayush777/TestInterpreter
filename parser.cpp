@@ -1,7 +1,14 @@
 #include"parser.h"
 
 
-
+std::unique_ptr<BlockStmt> Parser::parseBlock() {
+    std::vector<std::unique_ptr<Stmt>> statements;
+    while (!isAtEnd() && !check(TokenType::RIGHT_BRACE)) {      
+        statements.push_back(parseStatement());
+    }
+    consume(TokenType::RIGHT_BRACE, "Expected ')' to close block");
+    return std::make_unique<BlockStmt>(std::move(statements));
+}
 
 std::unique_ptr<ExprStmt> Parser::parseExpressionStmt() {
     auto expr = parseExpression();
@@ -10,6 +17,9 @@ std::unique_ptr<ExprStmt> Parser::parseExpressionStmt() {
 }
 
 std::unique_ptr<Stmt> Parser::parseStatement() {
+    if(match(TokenType::LEFT_BRACE)) {
+        return parseBlock();
+    }
     if (match(TokenType::SEMICOLON)) {
         return std::make_unique<ExprStmt>(nullptr); // Empty statement
     }

@@ -13,6 +13,8 @@ enum class TokenType{
     INVALID,
     LEFT_PAREN,
     RIGHT_PAREN,
+    LEFT_BRACE,
+    RIGHT_BRACE,
     SEMICOLON,
     END_OF_FILE
 };

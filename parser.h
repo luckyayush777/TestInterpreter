@@ -16,9 +16,12 @@ class Parser{
         return parseExpression();
     }
 
-    private :
-    std::unique_ptr<ExprStmt> parseExpressionStmt();
     std::unique_ptr<Stmt> parseStatement();
+
+
+    private :
+    std::unique_ptr<BlockStmt> parseBlock();
+    std::unique_ptr<ExprStmt> parseExpressionStmt();
     std::unique_ptr<Expr> parseExpression();
     std::unique_ptr<Expr> parseTerm();
     std::unique_ptr<Expr> parseFactor();

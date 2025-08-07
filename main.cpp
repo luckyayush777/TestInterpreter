@@ -5,6 +5,7 @@
 #include"lexer.h"
 #include"parser.h"
 #include"expr.h"
+#include"stmt.h"
 
 int main() {
 
@@ -38,7 +39,7 @@ int main() {
         std::cout << '\n';
     }
     Parser parser(tokens); 
-    std::unique_ptr<Expr> expr = parser.parse(); // gives the AST
-    std::cout<< "Result: " << expr->evaluate() << '\n'; // Evaluate the expression
+    std::unique_ptr<Stmt> stmt = parser.parseStatement();
+    stmt->execute(); // Evaluate the expression
     }
 }
