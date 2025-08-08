@@ -6,7 +6,7 @@ std::unique_ptr<BlockStmt> Parser::parseBlock() {
     while (!isAtEnd() && !check(TokenType::RIGHT_BRACE)) {      
         statements.push_back(parseStatement());
     }
-    consume(TokenType::RIGHT_BRACE, "Expected ')' to close block");
+    consume(TokenType::RIGHT_BRACE, "Expected '}' to close block");
     return std::make_unique<BlockStmt>(std::move(statements));
 }
 
