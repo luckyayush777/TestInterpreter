@@ -43,6 +43,15 @@ int main() {
             case TokenType::WHILE: std::cout << "WHILE"; break;
             case TokenType::FOR: std::cout << "FOR"; break;
             case TokenType::FUNCTION: std::cout << "FUNCTION"; break;
+            case TokenType::PRINT: std::cout << "PRINT"; break;
+            case TokenType::EQUALS: std::cout << "EQUALS"; break;
+            case TokenType::EQUALS_EQUALS: std::cout << "EQUALS_EQUALS"; break;
+            case TokenType::TRUE: std::cout << "TRUE"; break;
+            case TokenType::FALSE: std::cout << "FALSE"; break;
+            case TokenType::NIL: std::cout << "NIL"; break;
+            case TokenType::AND: std::cout << "AND"; break;
+            case TokenType::OR: std::cout << "OR"; break;
+            case TokenType::STRING: std::cout << "STRING"; break;
             default: std::cout << "UNKNOWN"; break;
         }
         std::cout << '\n';

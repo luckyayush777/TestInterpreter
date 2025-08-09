@@ -17,6 +17,7 @@ enum class TokenType{
     RIGHT_BRACE,
 
     EQUALS,
+    EQUALS_EQUALS,
 
     //literals
     IDENTIFIER,
