@@ -36,6 +36,13 @@ int main() {
             case TokenType::END_OF_FILE: std::cout << "EOF"; break;
             case TokenType::INVALID: std::cout << "INVALID"; break;
             case TokenType::SEMICOLON: std::cout << "SEMICOLON"; break;
+            case TokenType::IDENTIFIER: std::cout << "IDENTIFIER (" << t.lexeme << ")"; break;
+            case TokenType::VAR: std::cout << "VAR"; break;
+            case TokenType::IF: std::cout << "IF"; break;
+            case TokenType::ELSE: std::cout << "ELSE"; break;
+            case TokenType::WHILE: std::cout << "WHILE"; break;
+            case TokenType::FOR: std::cout << "FOR"; break;
+            case TokenType::FUNCTION: std::cout << "FUNCTION"; break;
             default: std::cout << "UNKNOWN"; break;
         }
         std::cout << '\n';

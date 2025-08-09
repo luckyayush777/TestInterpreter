@@ -39,6 +39,8 @@ class Lexer{
         }
         return Token(TokenType::NUMBER, lexeme, std::stod(lexeme));
     }
+
+    Token identifier(char firstChar);
 };
 
 

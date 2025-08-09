@@ -1,6 +1,42 @@
-#pragma once
 
+
+#include<unordered_map>
+#include<cctype>
+
+#include"token.h"
 #include"lexer.h"
+
+static const std::unordered_map<std::string, TokenType> keywords = {
+    {"and",    TokenType::AND},
+    {"else",   TokenType::ELSE},
+    {"false",  TokenType::FALSE},
+    {"for",    TokenType::FOR},
+    {"fun",    TokenType::FUNCTION},
+    {"if",     TokenType::IF},
+    {"nil",    TokenType::NIL},
+    {"or",     TokenType::OR},
+    {"print",  TokenType::PRINT},
+    {"return", TokenType::RETURN},
+    {"true",   TokenType::TRUE},
+    {"var",    TokenType::VAR},
+    {"while",  TokenType::WHILE}
+};
+
+Token Lexer::identifier(char firstChar)
+{
+    std::string lexeme(1, firstChar);
+
+    while (!isAtEnd() && (isalnum(peek()) || peek() == '_')) {
+        lexeme += advance();
+    }
+    // Check if the lexeme is a keyword
+    auto it = keywords.find(lexeme);
+    if (it != keywords.end()) {
+        return Token(it->second, lexeme);
+    }
+    return Token(TokenType::IDENTIFIER, lexeme);
+}
+
 
 std::vector<Token> Lexer::tokenize() {
     std::vector<Token> tokens;
@@ -44,7 +80,10 @@ std::vector<Token> Lexer::tokenize() {
             default:
                 if (isdigit(c) || (c == '.')) {
                     tokens.push_back(number(c));
-                } else {
+                } else if (isalpha(c) || c == '_') {
+                    tokens.push_back(identifier(c));
+                }
+                else {
                     tokens.emplace_back(TokenType::INVALID, std::string(1, c));
                 }
         }

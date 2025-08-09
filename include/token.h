@@ -15,6 +15,30 @@ enum class TokenType{
     RIGHT_PAREN,
     LEFT_BRACE,
     RIGHT_BRACE,
+
+    EQUALS,
+
+    //literals
+    IDENTIFIER,
+    STRING,
+    NUMBER_LITERAL,
+
+    //keywords
+    IF,
+    ELSE,
+    WHILE,
+    FOR,
+    FUNCTION,
+    RETURN,
+    VAR,
+    NIL,
+    TRUE,
+    PRINT,
+    FALSE,
+    AND, 
+    OR,
+
+
     SEMICOLON,
     END_OF_FILE
 };
