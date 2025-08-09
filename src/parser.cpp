@@ -10,13 +10,12 @@ std::unique_ptr<BlockStmt> Parser::parseBlock() {
     return std::make_unique<BlockStmt>(std::move(statements));
 }
 
-std::unique_ptr<ExprStmt> Parser::parseExpressionStmt() {
-    auto expr = parseExpression();
-    consume(TokenType::SEMICOLON, "Expected ';' after expression");
-    return std::make_unique<ExprStmt>(std::move(expr));
-}
+
 
 std::unique_ptr<Stmt> Parser::parseStatement() {
+    if(match(TokenType::VAR)) {
+        return parseVarDeclaration();
+    }
     if(match(TokenType::LEFT_BRACE)) {
         return parseBlock();
     }
@@ -26,7 +25,46 @@ std::unique_ptr<Stmt> Parser::parseStatement() {
     return parseExpressionStmt();
 }
 
+std::unique_ptr<Stmt> Parser::parseVarDeclaration() {
+    Token name = consume(TokenType::IDENTIFIER, "Expected variable name after 'var'");
+    std::unique_ptr<Expr> initializer = nullptr;
+
+    if (match(TokenType::EQUALS)) {
+        initializer = parseExpression();
+    }
+
+    consume(TokenType::SEMICOLON, "Expected ';' after variable declaration");
+    return std::make_unique<VarStmt>(std::move(name), std::move(initializer));
+}
+
+std::unique_ptr<ExprStmt> Parser::parseExpressionStmt() {
+    auto expr = parseExpression();
+    consume(TokenType::SEMICOLON, "Expected ';' after expression");
+    return std::make_unique<ExprStmt>(std::move(expr));
+}
+
 std::unique_ptr<Expr> Parser::parseExpression() {
+    return parseAssignment();
+}
+
+std::unique_ptr<Expr> Parser::parseAssignment() {
+    auto expr = parseAddition();
+
+    if (match(TokenType::EQUALS)) {
+        auto value = parseAssignment();
+        if(auto* varExpr = dynamic_cast<VariableExpr*>(expr.get())) {
+            Token name  = varExpr->name;
+            return std::make_unique<AssignmentExpr>(std::move(name), std::move(value));
+        } else {
+            throw std::runtime_error("Invalid assignment target");
+        }
+        
+    }
+
+    return expr;
+}
+
+std::unique_ptr<Expr> Parser::parseAddition() {
     auto left = parseTerm();
 
     while (match(TokenType::PLUS) || match(TokenType::MINUS)) {
@@ -55,6 +93,10 @@ std::unique_ptr<Expr> Parser::parseFactor() {
         return std::make_unique<NumberExpr>(previous().numberValue);
     }
 
+    if(match(TokenType::IDENTIFIER)) {
+        return std::make_unique<VariableExpr>(previous());
+    }
+
     if (match(TokenType::LEFT_PAREN)) {
         auto expr = parseExpression();
         if (!match(TokenType::RIGHT_PAREN)) {
@@ -63,7 +105,7 @@ std::unique_ptr<Expr> Parser::parseFactor() {
         return expr;
     }
 
-    throw std::runtime_error("Expected number or '('");
+    throw std::runtime_error("Expected expression, found: " + previous().lexeme);
 }
 
 Token Parser::consume(TokenType type, const std::string& errorMessage) {

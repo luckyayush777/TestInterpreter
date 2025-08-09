@@ -20,9 +20,12 @@ class Parser{
 
 
     private :
+    std::unique_ptr<Stmt> parseVarDeclaration();
     std::unique_ptr<BlockStmt> parseBlock();
     std::unique_ptr<ExprStmt> parseExpressionStmt();
     std::unique_ptr<Expr> parseExpression();
+    std::unique_ptr<Expr> parseAssignment();
+    std::unique_ptr<Expr> parseAddition();
     std::unique_ptr<Expr> parseTerm();
     std::unique_ptr<Expr> parseFactor();
     bool match(TokenType type);

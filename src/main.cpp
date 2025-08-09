@@ -6,9 +6,11 @@
 #include"parser.h"
 #include"expr.h"
 #include"stmt.h"
+#include"environment.h"
 
 int main() {
 
+    auto globalEnv = std::make_shared<Environment>();
     //comment out the test cases in src/tests.cpp
     std::string line;
     while(true)
@@ -58,6 +60,9 @@ int main() {
     }
     Parser parser(tokens); 
     std::unique_ptr<Stmt> stmt = parser.parseStatement();
-    stmt->execute(); // Evaluate the expression
+    if(stmt){
+        stmt->execute(globalEnv); // Execute the statement in the global environment
+    }
+
     }
 }

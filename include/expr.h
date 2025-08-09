@@ -1,9 +1,12 @@
 #pragma once
 #include <memory>
 
+
 #include"token.h"
+#include"environment.h"
+
 struct Expr{
-    virtual double evaluate() = 0;
+    virtual Value evaluate(std::shared_ptr<Environment> env) = 0;
     virtual ~Expr() = default;
 };
 
@@ -12,7 +15,7 @@ struct NumberExpr : public Expr{
 
     explicit NumberExpr(double value) : value(value) {}
 
-    double evaluate() override {
+    double evaluate(std::shared_ptr<Environment> env) override {
         return value;
     }
 };
@@ -24,9 +27,9 @@ struct BinaryExpr : public Expr{
 
     BinaryExpr(std::unique_ptr<Expr> left, TokenType op, std::unique_ptr<Expr> right)
         : left(std::move(left)), op(op), right(std::move(right)) {}
-    double evaluate() override {
-        double leftValue = left->evaluate();
-        double rightValue = right->evaluate();
+    Value evaluate(std::shared_ptr<Environment> env) override {
+        Value leftValue = left->evaluate(env);
+        Value rightValue = right->evaluate(env);
         switch(op){
             case TokenType::PLUS: return leftValue + rightValue;
             case TokenType::MINUS: return leftValue - rightValue;
@@ -39,6 +42,28 @@ struct BinaryExpr : public Expr{
             default:
                 throw std::runtime_error("Invalid operator");
         }
+    }
+};
+
+struct VariableExpr : public Expr{
+    Token name;
+    VariableExpr(Token name) : name(std::move(name)) {}
+    Value evaluate(std::shared_ptr<Environment> env) override {
+        return env->get(name.lexeme);
+    }
+};
+
+struct AssignmentExpr : public Expr{
+    Token name;
+    std::unique_ptr<Expr> value;
+
+    AssignmentExpr(Token name, std::unique_ptr<Expr> value)
+        : name(std::move(name)), value(std::move(value)) {}
+
+    Value evaluate(std::shared_ptr<Environment> env) override {
+        Value val = value->evaluate(env);
+        env->assign(name.lexeme, val);
+        return val;
     }
 };
 

@@ -15,13 +15,11 @@ static const std::unordered_map<std::string, TokenType> keywords = {
     {"if",     TokenType::IF},
     {"nil",    TokenType::NIL},
     {"or",     TokenType::OR},
-    {"print",  TokenType::PRINT},
     {"return", TokenType::RETURN},
     {"true",   TokenType::TRUE},
     {"var",    TokenType::VAR},
     {"while",  TokenType::WHILE},
     {"print", TokenType::PRINT},
-    {"identifier", TokenType::IDENTIFIER}
 };
 
 Token Lexer::identifier(char firstChar)
@@ -75,6 +73,7 @@ std::vector<Token> Lexer::tokenize() {
                 break;
             case '}':
                 tokens.emplace_back(TokenType::RIGHT_BRACE, "}");
+                break;
             case '=':
                 if ((!isAtEnd()) && peek() == '=') {
                     advance(); // Consume the '='
