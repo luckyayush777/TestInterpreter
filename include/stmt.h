@@ -1,11 +1,12 @@
 #pragma once
 
 #include <vector>
-#include<memory>
-#include<iostream>
+#include <memory>
+#include <iostream>
 
-#include"expr.h"
-#include"environment.h"
+#include "expr.h"
+#include "environment.h"
+#include "util.h" // For isTruthy and the new valueToString helper
 
 class Stmt{
     public :
@@ -19,12 +20,8 @@ class ExprStmt : public Stmt{
     ExprStmt(std::unique_ptr<Expr> expr) : expression(std::move(expr)) {}
 
     void execute(std::shared_ptr<Environment> env) override {
-        // For now, just evaluate the expression and discard the result
-        std::cout<<"Result : " << expression->evaluate(env)<<" \n";
-        // In a full interpreter, you might want to store the result or do something with it
-        // For example, you could print it or store it in a variable
-        // Here, we just print it to the console
-        // This is a placeholder for future functionality
+        // We need a helper to print the variant
+        std::cout << "Result : " << valueToString(expression->evaluate(env)) << " \n";
     }
 };
 
@@ -41,10 +38,6 @@ class BlockStmt : public Stmt{
             stmt->execute(blockEnv);
         }
     }
-
-    void addStatement(std::unique_ptr<Stmt> stmt) {
-        statements.push_back(std::move(stmt));
-    }
 };
 
 class VarStmt : public Stmt{
@@ -56,7 +49,7 @@ class VarStmt : public Stmt{
         : name(std::move(name)), initializer(std::move(initializer)) {}
 
     void execute(std::shared_ptr<Environment> env) override {
-        Value value = 0.0; // Default value
+        Value value = nullptr; // Default value is now nil
         if (initializer) {
             value = initializer->evaluate(env);
         }
@@ -64,3 +57,22 @@ class VarStmt : public Stmt{
     }
 };
 
+class IfStmt : public Stmt {
+    public :
+    std::unique_ptr<Expr> condition;
+    std::unique_ptr<Stmt> thenBranch;
+    std::unique_ptr<Stmt> elseBranch;   
+
+    IfStmt(std::unique_ptr<Expr> cond, std::unique_ptr<Stmt> thenB, 
+           std::unique_ptr<Stmt> elseB = nullptr)
+        : condition(std::move(cond)), thenBranch(std::move(thenB)), 
+          elseBranch(std::move(elseB)) {}
+
+    void execute(std::shared_ptr<Environment> env) override{
+        if (isTruthy(condition->evaluate(env))) {
+            thenBranch->execute(env);
+        } else if (elseBranch) {
+            elseBranch->execute(env);
+        }
+    }
+};

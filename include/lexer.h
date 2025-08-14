@@ -41,6 +41,9 @@ class Lexer{
     }
 
     Token identifier(char firstChar);
+
+    
+    bool match(char expected);
 };
 
 

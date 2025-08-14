@@ -5,7 +5,8 @@
 #include <stdexcept>
 #include <unordered_map>
 
-using Value = double; // Define Value as a double for simplicity
+#include"expr.h"
+
 
 class Environment {
 private:

@@ -74,12 +74,33 @@ std::vector<Token> Lexer::tokenize() {
             case '}':
                 tokens.emplace_back(TokenType::RIGHT_BRACE, "}");
                 break;
+            // Inside the switch (c) { ... }
+            case '>':
+                if(match('=')) {
+                    tokens.emplace_back(TokenType::GREATER_THAN_EQUALS, ">=");
+                } else {
+                    tokens.emplace_back(TokenType::GREATER_THAN, ">");
+                }
+                break;
+            case '<':
+                if(match('=')) {
+                    tokens.emplace_back(TokenType::LESS_THAN_EQUALS, "<=");
+                } else {
+                    tokens.emplace_back(TokenType::LESS_THAN, "<"); 
+                }
+                break;
             case '=':
-                if ((!isAtEnd()) && peek() == '=') {
-                    advance(); // Consume the '='
+                if (match('=')) {
                     tokens.emplace_back(TokenType::EQUALS_EQUALS, "==");
                 } else {
                     tokens.emplace_back(TokenType::EQUALS, "=");
+                }
+                break;
+            case '!':
+                if (match('=')) {
+                    tokens.emplace_back(TokenType::BANG_EQUALS, "!=");
+                } else {
+                    tokens.emplace_back(TokenType::BANG, "!");  
                 }
                 break;
             case ';':
@@ -98,4 +119,12 @@ std::vector<Token> Lexer::tokenize() {
     }
     tokens.emplace_back(TokenType::END_OF_FILE, ""); // End of input token
     return tokens;
+}
+
+bool Lexer::match(char expected) {
+    if (isAtEnd() || source[current] != expected) {
+        return false;
+    }
+    current++;
+    return true;
 }

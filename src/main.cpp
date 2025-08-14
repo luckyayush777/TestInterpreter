@@ -30,10 +30,15 @@ int main() {
     ShowTokens(tokens); // Display the tokens for debugging
     
     Parser parser(tokens); 
-    std::unique_ptr<Stmt> stmt = parser.parseStatement();
-    if(stmt){
-        stmt->execute(globalEnv); // Execute the statement in the global environment
-    }
+    // In main.cpp, replace this line:
+// std::unique_ptr<Stmt> stmt = parser.parseStatement();
 
+// With this:
+auto statements = parser.parse();
+    for (const auto& stmt : statements) {
+        if(stmt) {
+        stmt->execute(globalEnv);
+        }
+    }
     }
 }

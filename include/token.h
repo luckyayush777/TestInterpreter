@@ -1,57 +1,30 @@
 #pragma once
 
-#include <string>
+#include <string> 
 #include <vector>
+#include <variant>
 
-// Ensure TokenType is only defined here and not elsewhere
+// This is the single, canonical definition of the Value type.
+using Value = std::variant<std::nullptr_t, bool, double, std::string>;
+
 enum class TokenType{
-    NUMBER,
-    PLUS,
-    MINUS,
-    STAR,
-    SLASH,
-    INVALID,
-    LEFT_PAREN,
-    RIGHT_PAREN,
-    LEFT_BRACE,
-    RIGHT_BRACE,
-
-    EQUALS,
-    EQUALS_EQUALS,
-
-    //literals
-    IDENTIFIER,
-    STRING,
-    NUMBER_LITERAL,
-
-    //keywords
-    IF,
-    ELSE,
-    WHILE,
-    FOR,
-    FUNCTION,
-    RETURN,
-    VAR,
-    NIL,
-    TRUE,
-    PRINT,
-    FALSE,
-    AND, 
-    OR,
-
-
-    SEMICOLON,
-    END_OF_FILE
+    NUMBER, PLUS, MINUS, STAR, SLASH, INVALID, LEFT_PAREN, RIGHT_PAREN,
+    LEFT_BRACE, RIGHT_BRACE, EQUALS, EQUALS_EQUALS, LESS_THAN,
+    LESS_THAN_EQUALS, GREATER_THAN, GREATER_THAN_EQUALS, BANG, BANG_EQUALS,
+    IDENTIFIER, STRING, NUMBER_LITERAL, IF, ELSE, WHILE, FOR, FUNCTION,
+    RETURN, VAR, NIL, TRUE, PRINT, FALSE, AND, OR, SEMICOLON, END_OF_FILE
 };
+
 struct Token {
     TokenType type;
     std::string lexeme;
+    Value literal; // Replaces numberValue
 
-    //doesnt make sense for some types of tokens
-    //but is useful for NUMBER tokens
-    double numberValue = 0.0;
+    // Constructor for non-literal tokens
+    Token(TokenType type, std::string lexeme) 
+        : type(type), lexeme(std::move(lexeme)), literal{nullptr} {} // Corrected initializer
 
-    Token(TokenType type, std::string lexeme) : type(type), lexeme(std::move(lexeme)) {}
-    Token(TokenType type, std::string lexeme, double numberValue) 
-        : type(type), lexeme(std::move(lexeme)), numberValue(numberValue) {}
+    // Constructor for literal tokens
+    Token(TokenType type, std::string lexeme, Value literal) 
+        : type(type), lexeme(std::move(lexeme)), literal(std::move(literal)) {}
 };
