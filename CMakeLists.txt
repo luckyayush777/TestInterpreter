@@ -11,7 +11,6 @@ add_executable(TestInterpreter
     src/lexer.cpp
     src/parser.cpp
     src/util.cpp
-    src/stmt.cpp
     src/environment.cpp
     src/expr.cpp
 )

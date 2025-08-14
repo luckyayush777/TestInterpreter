@@ -75,5 +75,5 @@ void ShowTokens(const std::vector<Token>& tokens) {
         }
         std::cout << std::endl;
     }
-    std::cout << "----------------" << std::endl;
+    std::cout << "-----END---------" << std::endl;
 }
