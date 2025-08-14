@@ -77,6 +77,20 @@ class IfStmt : public Stmt {
     }
 };
 
+class WhileStmt : public Stmt {
+    public :
+    std::unique_ptr<Expr> condition;
+    std::unique_ptr<Stmt> body;
+
+    WhileStmt(std::unique_ptr<Expr> cond, std::unique_ptr<Stmt> b)
+        : condition(std::move(cond)), body(std::move(b)) {}
+
+    void execute(std::shared_ptr<Environment> env) override {
+        while (isTruthy(condition->evaluate(env))) {
+            body->execute(env);
+        }
+    }
+};
 class PrintStmt : public Stmt {
     public :
     std::unique_ptr<Expr> expression;
@@ -88,3 +102,5 @@ class PrintStmt : public Stmt {
         std::cout << valueToString(value) << std::endl;
     }
 };
+
+

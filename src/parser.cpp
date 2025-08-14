@@ -13,6 +13,9 @@ std::vector<std::unique_ptr<Stmt>> Parser::parse() {
 //-- STATEMENT PARSING --//
 
 std::unique_ptr<Stmt> Parser::parseStatement() {
+    if(match({TokenType::WHILE})) {
+        return parseWhileStatement();
+    }
     if(match({TokenType::PRINT})) return parsePrintStatement();
     if (match({TokenType::IF})) return parseIfStatement();
     if (match({TokenType::VAR})) return parseVarDeclaration();
@@ -20,6 +23,14 @@ std::unique_ptr<Stmt> Parser::parseStatement() {
 
      if (check(TokenType::END_OF_FILE)) return nullptr; 
     return parseExpressionStmt();
+}
+
+std::unique_ptr<Stmt> Parser::parseWhileStatement() {
+    consume(TokenType::LEFT_PAREN, "Expected '(' after 'while'.");
+    auto condition = parseExpression();
+    consume(TokenType::RIGHT_PAREN, "Expected ')' after while condition.");
+    auto body = parseStatement();
+    return std::make_unique<WhileStmt>(std::move(condition), std::move(body));
 }
 
 std::unique_ptr<Stmt> Parser::parsePrintStatement() {
