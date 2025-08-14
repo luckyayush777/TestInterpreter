@@ -1,78 +1,107 @@
 # TestInterpreter
 
-A lightweight C++ expression interpreter — designed to parse and evaluate simple programs with ease, now with a clean CMake-based build system and project structure.
+A lightweight C++ interpreter for a small, expression-oriented language. 
+This project is inspired by *Crafting Interpreters* but uses modern C++ features 
+like `std::variant`, smart pointers, and RAII for safety and clarity.
 
 ## Features
 
-- **Lexical Analysis**: Tokenizes input using `lexer.h` / `lexer.cpp`.
-- **Parsing**: Builds ASTs and supports statements via `parser.h` / `parser.cpp`.
-- **Expression Evaluation**: Evaluates expressions and executes statements (`expr.h`, `stmt.h`, and `stmt.cpp`).
-- **Block Statements**: Supports `{ ... }` with nested statements.
-- **Test Support**: Add test files with their own `main()` functions.
-- **CMake Build System**: Simplifies compilation across platforms.
+### Implemented
+- **Lexical Analysis** (`lexer.h` / `lexer.cpp`)
+  - Tokenizes input source into a `Token` stream.
+  - Supports identifiers, keywords, numbers, operators, and braces.
+- **Parsing** (`parser.h` / `parser.cpp`)
+  - Recursive descent parser with clear operator precedence.
+  - Handles expressions, variable declarations, blocks, and `if`/`else` statements.
+- **AST Evaluation** (`expr.h` / `expr.cpp`, `stmt.h`)
+  - Expression nodes: literals, variables, assignments, unary, binary.
+  - Statement nodes: expression statements, variable declarations, blocks, conditionals.
+- **Environments / Scopes** (`environment.h` / `environment.cpp`)
+  - Lexical scoping with nested environments.
+  - Variable definition, lookup, and assignment.
+- **REPL & File Execution** (`main.cpp`)
+  - Interactive mode for quick experiments.
+  - Script mode for running `.txt` or `.lox`-style files.
 
-## Folder Structure
+### Planned / Incomplete
+- String literal parsing.
+- `print` statement instead of hardcoded expression output.
+- Grouping expression AST node.
+- Error recovery (currently stops at first error).
+- Better number formatting.
+- Removal of unused `TokenType::NUMBER_LITERAL`.
 
+## Example
+
+### Source
+```
+var b = 1;
+if (b > 5) {
+  b = 99;
+} else {
+  b = -1;
+}
+b;
+```
+
+### Output
+```
+--- TOKENS ---
+Type: VAR  Lexeme: 'var'
+...
+----------------
+Result : -1
+```
+
+## Build Instructions
+
+### Prerequisites
+- CMake >= 3.10
+- C++17 compatible compiler (GCC, Clang, MSVC)
+
+### Steps
+```bash
+git clone https://github.com/luckyayush777/TestInterpreter.git
+cd TestInterpreter
+mkdir build && cd build
+cmake ..
+make
+```
+
+### Run
+Interactive REPL:
+```bash
+./TestInterpreter
+```
+
+Run script file:
+```bash
+./TestInterpreter path/to/script.txt
+```
+
+## Project Structure
 ```
 TestInterpreter/
 ├── CMakeLists.txt
 ├── include/
+│   ├── environment.h
 │   ├── expr.h
 │   ├── lexer.h
 │   ├── parser.h
 │   ├── stmt.h
-│   └── token.h
+│   ├── token.h
+│   └── util.h
 ├── src/
-│   ├── main.cpp       # Entry point for interpreter
+│   ├── environment.cpp
+│   ├── expr.cpp
 │   ├── lexer.cpp
+│   ├── main.cpp
 │   ├── parser.cpp
 │   ├── stmt.cpp
-│   ├── expr.cpp
-│   └── tests.cpp      # Optional: Test file (exclude or isolate to avoid duplicate 'main')
-├── build/             # Auto-generated build folder
-└── .gitignore
+│   └── util.cpp
+├── test.txt
+└── README.md
 ```
-
-## Getting Started
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/luckyayush777/TestInterpreter.git
-   cd TestInterpreter
-   ```
-
-2. **Build the project with CMake**
-   ```bash
-   mkdir build
-   cd build
-   cmake ..
-   make
-   ```
-
-3. **Run the interpreter**
-   ```bash
-   ./TestInterpreter
-   ```
-
-4. **Testing**
-   - If `tests.cpp` has a `main()`, create a separate CMake target for it.
-   - Or temporarily exclude it when building the main interpreter.
-
-## Example Input
-
-```
-{ 1 + 2; 3 * (4 + 5); }
-```
-Produces:
-```
-Result : 3
-Result : 27
-```
-
-## Contributing
-
-Feel free to open issues or submit pull requests with suggestions or improvements.
 
 ## License
-
-MIT License – feel free to build and adapt as you like.
+MIT License — free to use, modify, and distribute.
