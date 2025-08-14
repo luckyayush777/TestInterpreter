@@ -25,7 +25,7 @@ std::unique_ptr<Stmt> Parser::parseStatement() {
 std::unique_ptr<Stmt> Parser::parsePrintStatement() {
     auto expr = parseExpression();
     consume(TokenType::SEMICOLON, "Expected ';' after print statement.");
-    return std::make_unique<ExprStmt>(std::move(expr));
+    return std::make_unique<PrintStmt>(std::move(expr));
 }
 
 std::unique_ptr<Stmt> Parser::parseIfStatement() {
