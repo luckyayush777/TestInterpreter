@@ -13,12 +13,19 @@ std::vector<std::unique_ptr<Stmt>> Parser::parse() {
 //-- STATEMENT PARSING --//
 
 std::unique_ptr<Stmt> Parser::parseStatement() {
+    if(match({TokenType::PRINT})) return parsePrintStatement();
     if (match({TokenType::IF})) return parseIfStatement();
     if (match({TokenType::VAR})) return parseVarDeclaration();
     if (match({TokenType::LEFT_BRACE})) return parseBlock();
 
      if (check(TokenType::END_OF_FILE)) return nullptr; 
     return parseExpressionStmt();
+}
+
+std::unique_ptr<Stmt> Parser::parsePrintStatement() {
+    auto expr = parseExpression();
+    consume(TokenType::SEMICOLON, "Expected ';' after print statement.");
+    return std::make_unique<ExprStmt>(std::move(expr));
 }
 
 std::unique_ptr<Stmt> Parser::parseIfStatement() {

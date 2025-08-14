@@ -21,7 +21,7 @@ class ExprStmt : public Stmt{
 
     void execute(std::shared_ptr<Environment> env) override {
         // We need a helper to print the variant
-        std::cout << "Result : " << valueToString(expression->evaluate(env)) << " \n";
+        expression->evaluate(env);
     }
 };
 
@@ -74,5 +74,17 @@ class IfStmt : public Stmt {
         } else if (elseBranch) {
             elseBranch->execute(env);
         }
+    }
+};
+
+class PrintStmt : public Stmt {
+    public :
+    std::unique_ptr<Expr> expression;
+
+    PrintStmt(std::unique_ptr<Expr> expr) : expression(std::move(expr)) {}
+
+    void execute(std::shared_ptr<Environment> env) override {
+        Value value = expression->evaluate(env);
+        std::cout << valueToString(value) << std::endl;
     }
 };

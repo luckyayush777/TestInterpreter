@@ -13,6 +13,7 @@ public:
 private:
     // Statement parsing
     std::unique_ptr<Stmt> parseStatement();
+    std::unique_ptr<Stmt> parsePrintStatement();
     std::unique_ptr<Stmt> parseIfStatement();
     std::unique_ptr<Stmt> parseVarDeclaration();
     std::unique_ptr<Stmt> parseExpressionStmt();
