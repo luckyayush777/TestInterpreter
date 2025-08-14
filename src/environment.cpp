@@ -1,28 +1,34 @@
-#include"environment.h"
-
+#include "environment.h"
 
 Environment::Environment(std::shared_ptr<Environment> parent) : enclosing(parent) {}
-void Environment::define(const std::string& name, Value val) {
+\
+void Environment::define(const std::string& name, const Value& val) {
     values[name] = val;
 }
 
-void Environment::assign(const std::string& name, Value val) {
-    if(values.count(name))
-    {
+// Corrected to take 'const Value&' to match the header
+void Environment::assign(const std::string& name, const Value& val) {
+    if (values.count(name)) {
         values[name] = val;
-    } else if (enclosing) {
-        enclosing->assign(name, val);
-    } else {
-        throw std::runtime_error("Undefined variable '" + name + "'");
+        return;
     }
+    
+    if (enclosing) {
+        enclosing->assign(name, val);
+        return;
+    }
+    
+    throw std::runtime_error("Undefined variable '" + name + "'");
 }
 
 Value Environment::get(const std::string& name) const {
-    if(values.count(name)) {
+    if (values.count(name)) {
         return values.at(name);
-    } else if (enclosing) {
-        return enclosing->get(name);
-    } else {
-        throw std::runtime_error("Undefined variable '" + name + "'");
     }
+    
+    if (enclosing) {
+        return enclosing->get(name);
+    }
+    
+    throw std::runtime_error("Undefined variable '" + name + "'");
 }

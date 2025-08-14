@@ -13,6 +13,7 @@ add_executable(TestInterpreter
     src/util.cpp
     src/stmt.cpp
     src/environment.cpp
+    src/expr.cpp
 )
 
 # Apply include directory settings only to the TestInterpreter target

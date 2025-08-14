@@ -16,7 +16,8 @@ std::unique_ptr<Stmt> Parser::parseStatement() {
     if (match({TokenType::IF})) return parseIfStatement();
     if (match({TokenType::VAR})) return parseVarDeclaration();
     if (match({TokenType::LEFT_BRACE})) return parseBlock();
-    if (match({TokenType::SEMICOLON})) return nullptr; // Empty statement
+
+     if (check(TokenType::END_OF_FILE)) return nullptr; 
     return parseExpressionStmt();
 }
 
@@ -78,6 +79,21 @@ std::unique_ptr<Expr> Parser::parseAssignment() {
     return expr;
 }
 
+// In parser.cpp
+
+// Handles ! and - (prefix)
+std::unique_ptr<Expr> Parser::parseUnary() {
+    if (match({TokenType::BANG, TokenType::MINUS})) {
+        Token op = previous();
+        auto right = parseUnary();
+        // This is now active and will create the UnaryExpr node
+        return std::make_unique<UnaryExpr>(op, std::move(right));
+    }
+    return parsePrimary();
+}
+
+
+
 // NEW: Handles == and !=
 std::unique_ptr<Expr> Parser::parseEquality() {
     auto expr = parseComparison(); // Next higher precedence
@@ -123,16 +139,6 @@ std::unique_ptr<Expr> Parser::parseFactor() {
     return expr;
 }
 
-// Handles ! and - (prefix)
-std::unique_ptr<Expr> Parser::parseUnary() {
-    if (match({TokenType::BANG, TokenType::MINUS})) {
-        Token op = previous();
-        auto right = parseUnary();
-        // You'll need a UnaryExpr class in expr.h for this to work
-        // return std::make_unique<UnaryExpr>(op, std::move(right));
-    }
-    return parsePrimary();
-}
 
 // Handles literals and grouping
 std::unique_ptr<Expr> Parser::parsePrimary() {
@@ -141,8 +147,6 @@ std::unique_ptr<Expr> Parser::parsePrimary() {
     if (match({TokenType::NIL})) return std::make_unique<LiteralExpr>(nullptr);
 
     if (match({TokenType::NUMBER, TokenType::STRING})) {
-        // You'll need to update your Token and LiteralExpr to handle this
-        // return std::make_unique<LiteralExpr>(previous().literal);
         return std::make_unique<LiteralExpr>(previous().literal);
     }
 

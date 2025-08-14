@@ -1,12 +1,11 @@
 #pragma once
 #include <memory>
-#include <variant>
 #include <string>
+#include <variant>
 
-#include "token.h"
-#include "environment.h"
-
-
+#include "token.h" // Provides the Value type
+// Forward declaration of Environment to avoid circular dependencies
+class Environment;
 
 // The base class for all expression AST nodes.
 struct Expr {
@@ -15,15 +14,23 @@ struct Expr {
 };
 
 
-// A new, more general expression for literal values (numbers, true, false, nil).
+// NEW: Represents a unary operation like '-' or '!'.
+struct UnaryExpr : public Expr {
+    Token op;
+    std::unique_ptr<Expr> right;
+
+    UnaryExpr(Token op, std::unique_ptr<Expr> right)
+        : op(std::move(op)), right(std::move(right)) {}
+
+    Value evaluate(std::shared_ptr<Environment> env) override; // Implementation in expr.cpp
+};
+// A general expression for literal values (numbers, true, false, nil).
 struct LiteralExpr : public Expr {
     Value value;
 
     explicit LiteralExpr(Value val) : value(std::move(val)) {}
 
-    Value evaluate(std::shared_ptr<Environment> env) override {
-        return value;
-    }
+    Value evaluate(std::shared_ptr<Environment> env) override; // Implementation in expr.cpp
 };
 
 // Represents a binary operation.
@@ -35,17 +42,14 @@ struct BinaryExpr : public Expr {
     BinaryExpr(std::unique_ptr<Expr> left, Token op, std::unique_ptr<Expr> right)
         : left(std::move(left)), op(op), right(std::move(right)) {}
 
-    // This now needs to handle different types and return a variant.
-    Value evaluate(std::shared_ptr<Environment> env) override;
+    Value evaluate(std::shared_ptr<Environment> env) override; // Implementation in expr.cpp
 };
 
 // Represents a variable lookup.
 struct VariableExpr : public Expr {
     Token name;
     VariableExpr(Token name) : name(std::move(name)) {}
-    Value evaluate(std::shared_ptr<Environment> env) override {
-        return env->get(name.lexeme);
-    }
+    Value evaluate(std::shared_ptr<Environment> env) override; // Implementation in expr.cpp
 };
 
 // Represents a variable assignment.
@@ -56,9 +60,5 @@ struct AssignmentExpr : public Expr {
     AssignmentExpr(Token name, std::unique_ptr<Expr> value)
         : name(std::move(name)), value(std::move(value)) {}
 
-    Value evaluate(std::shared_ptr<Environment> env) override {
-        Value val = value->evaluate(env);
-        env->assign(name.lexeme, val);
-        return val;
-    }
+    Value evaluate(std::shared_ptr<Environment> env) override; // Implementation in expr.cpp
 };

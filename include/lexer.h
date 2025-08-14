@@ -30,15 +30,28 @@ class Lexer{
     }
 
     Token number(char firstChar)
-    {
-        std::string lexeme(1, firstChar);
+{
+    std::string lexeme(1, firstChar);
 
-        while(!isAtEnd() && (isdigit(peek()) || peek() == '.'))
-        {
-            lexeme += advance();
-        }
-        return Token(TokenType::NUMBER, lexeme, std::stod(lexeme));
+    // Handle digits before decimal point
+    while(!isAtEnd() && isdigit(peek()))
+    {
+        lexeme += advance();
     }
+    
+    // Handle decimal point and digits after (only one decimal point allowed)
+    if (!isAtEnd() && peek() == '.') {
+        // Look ahead to make sure there's a digit after the decimal
+        if (current + 1 < source.size() && isdigit(source[current + 1])) {
+            lexeme += advance(); // consume the '.'
+            while(!isAtEnd() && isdigit(peek())) {
+                lexeme += advance();
+            }
+        }
+    }
+    
+    return Token(TokenType::NUMBER, lexeme, std::stod(lexeme));
+}
 
     Token identifier(char firstChar);
 

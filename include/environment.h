@@ -5,8 +5,7 @@
 #include <stdexcept>
 #include <unordered_map>
 
-#include"expr.h"
-
+#include "token.h" // Include for the Value type definition
 
 class Environment {
 private:
@@ -15,8 +14,7 @@ private:
 
 public :
     Environment(std::shared_ptr<Environment> parent = nullptr);
-    void define(const std::string& name, Value val);
-    void assign(const std::string& name, Value val);
+    void define(const std::string& name, const Value& val);
+    void assign(const std::string& name, const Value& val);
     Value get(const std::string& name) const;
-
 };
