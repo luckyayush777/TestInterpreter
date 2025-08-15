@@ -4,6 +4,7 @@ project(TestInterpreter)
 # Set the C++ standard for the project
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Define your executable and list all its source files explicitly
 add_executable(TestInterpreter
