@@ -1,5 +1,9 @@
 #include "expr.h"
-#include "environment.h" // Need the full definition for evaluate methods
+#include "environment.h" 
+#include"callable.h"
+#include"function.h"
+
+// Need the full definition for evaluate methods
 #include <stdexcept>
 
 #include"util.h" // For isTruthy and valueToString
@@ -101,4 +105,27 @@ Value BinaryExpr::evaluate(std::shared_ptr<Environment> env) {
             // This case should ideally be unreachable if the parser is correct.
             throw std::runtime_error("Invalid binary operator.");
     }
+}
+
+Value CallExpr::evaluate(std::shared_ptr<Environment> env) {
+    Value calleeValue = callee->evaluate(env);
+    std::vector<Value> args;
+    for (const auto& arg : arguments) {
+        args.push_back(arg->evaluate(env));
+    }
+    if (!std::holds_alternative<std::shared_ptr<Callable>>(calleeValue)) {
+        throw std::runtime_error("Callee is not callable.");
+    }
+
+    auto function = std::get<std::shared_ptr<Callable>>(calleeValue);
+    std::vector<Value> args;
+    if(args.size() != function->arity()) {
+        throw std::runtime_error("Expected " + std::to_string(function->arity()) + 
+        " arguments but got " + std::to_string(args.size()) + ".");
+    }
+    if (args.size() > 255) {
+        throw std::runtime_error("Cannot have more than 255 arguments.");
+    }
+
+    return function->call(env, args);
 }

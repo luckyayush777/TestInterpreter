@@ -8,6 +8,15 @@
 #include "environment.h"
 #include "util.h" // For isTruthy and the new valueToString helper
 
+
+struct ReturnValue{
+    Value value;
+
+    explicit ReturnValue(Value val) : value(std::move(val)) {}
+};
+
+
+
 class Stmt{
     public :
     virtual ~Stmt() = default;
@@ -134,12 +143,6 @@ class PrintStmt : public Stmt {
     }
 };
 
-
-struct ReturnValue{
-    Value value;
-
-    explicit ReturnValue(Value val) : value(std::move(val)) {}
-};
 
 
 
