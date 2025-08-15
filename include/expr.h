@@ -1,7 +1,5 @@
 #pragma once
 #include <memory>
-#include <string>
-#include <variant>
 
 #include "token.h" // Provides the Value type
 // Forward declaration of Environment to avoid circular dependencies

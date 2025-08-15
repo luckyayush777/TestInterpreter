@@ -2,9 +2,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <vector>
 
-#include "token.h"
 #include "lexer.h"
 #include "parser.h"
 #include "expr.h"
