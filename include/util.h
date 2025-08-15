@@ -6,6 +6,7 @@
 
 // Forward-declare Environment to avoid including the full header here
 class Environment;
+class Callable;
 
 // Function declarations
 bool isTruthy(const Value& value);

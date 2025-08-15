@@ -62,3 +62,13 @@ struct AssignmentExpr : public Expr {
 
     Value evaluate(std::shared_ptr<Environment> env) override; // Implementation in expr.cpp
 };
+
+struct CallExpr : public Expr {
+    Token callee; // The function name
+    std::vector<std::unique_ptr<Expr>> arguments; // Arguments to the function
+
+    CallExpr(Token callee, std::vector<std::unique_ptr<Expr>> arguments)
+        : callee(std::move(callee)), arguments(std::move(arguments)) {}
+
+    Value evaluate(std::shared_ptr<Environment> env) override; // Implementation in expr.cpp
+};

@@ -1,4 +1,5 @@
 #include "util.h"
+#include"callable.h"
 #include <iostream>
 #include <variant>
 
@@ -58,6 +59,9 @@ std::string valueToString(const Value& value) {
     if (std::holds_alternative<bool>(value)) return std::get<bool>(value) ? "true" : "false";
     if (std::holds_alternative<double>(value)) return std::to_string(std::get<double>(value));
     if (std::holds_alternative<std::string>(value)) return std::get<std::string>(value);
+    if (std::holds_alternative<std::shared_ptr<Callable>>(value)) {
+        return std::get<std::shared_ptr<Callable>>(value)->toString();
+    }
     return "unknown value type";
 }
 

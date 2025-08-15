@@ -14,10 +14,12 @@ private:
     // Statement parsing
     std::unique_ptr<Stmt> parseStatement();
     std::unique_ptr<Stmt> parsePrintStatement();
+    std::unique_ptr<Stmt> parseReturnStatement();
     std::unique_ptr<Stmt> parseIfStatement();
     std::unique_ptr<Stmt> parseWhileStatement();
     std::unique_ptr<Stmt> parseVarDeclaration();
     std::unique_ptr<Stmt> parseExpressionStmt();
+    std::unique_ptr<FunctionStmt> parseFunction();
     std::unique_ptr<BlockStmt> parseBlock();
 
     // Expression parsing (in order of precedence)
@@ -28,6 +30,7 @@ private:
     std::unique_ptr<Expr> parseTerm();
     std::unique_ptr<Expr> parseFactor();
     std::unique_ptr<Expr> parseUnary();
+    std::unique_ptr<Expr> parseCall();
     std::unique_ptr<Expr> parsePrimary();
 
     // Helper methods

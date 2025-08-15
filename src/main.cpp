@@ -19,8 +19,8 @@ void run(const std::string& source, std::shared_ptr<Environment> env) {
         auto tokens = lexer.tokenize();
         
         // Optional: You can uncomment this to see the tokens for debugging file scripts
-        std::cout<< "Tokens:\n";
-        ShowTokens(tokens);
+        //std::cout<< "Tokens:\n";
+        //ShowTokens(tokens);
 
         Parser parser(tokens);
         auto statements = parser.parse();

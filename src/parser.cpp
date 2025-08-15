@@ -13,6 +13,12 @@ std::vector<std::unique_ptr<Stmt>> Parser::parse() {
 //-- STATEMENT PARSING --//
 
 std::unique_ptr<Stmt> Parser::parseStatement() {
+    if(match({TokenType::FUNCTION})) {
+        return parseFunction();
+    }
+    if(match({TokenType::RETURN})) {
+        return parseReturnStatement();
+    }
     if(match({TokenType::WHILE})) {
         return parseWhileStatement();
     }
@@ -25,6 +31,39 @@ std::unique_ptr<Stmt> Parser::parseStatement() {
     return parseExpressionStmt();
 }
 
+std::unique_ptr<Stmt> Parser::parseReturnStatement() {
+    Token keyword = previous();
+    std::unique_ptr<Expr> value = nullptr;
+    if (!check(TokenType::SEMICOLON)) {
+        value = parseExpression();
+    }
+    consume(TokenType::SEMICOLON, "Expected ';' after return statement.");
+    return std::make_unique<ReturnStmt>(std::move(keyword), std::move(value));
+}
+
+std::unique_ptr<FunctionStmt> Parser::parseFunction() {
+    Token name = consume(TokenType::IDENTIFIER, "Expected function name.");
+    consume(TokenType::LEFT_PAREN, "Expected '(' after function name.");
+
+    std::vector<Token> parameters;
+    if (!check(TokenType::RIGHT_PAREN)) {
+        do {
+            if (parameters.size() >= 255) {
+                // Error reporting could be better, but this is a safeguard.
+                throw std::runtime_error("Cannot have more than 255 parameters.");
+            }
+            parameters.push_back(consume(TokenType::IDENTIFIER, "Expected parameter name."));
+        } while (match({TokenType::COMMA}));
+    }
+    consume(TokenType::RIGHT_PAREN, "Expected ')' after parameters.");
+
+    consume(TokenType::LEFT_BRACE, "Expected '{' before function body.");
+    auto body = parseBlock();
+
+    // We cast here because parseBlock returns a unique_ptr<BlockStmt>
+    // and the FunctionStmt constructor expects a vector of statements.
+    return std::make_unique<FunctionStmt>(name, std::move(parameters), std::move(body->statements));
+}
 std::unique_ptr<Stmt> Parser::parseWhileStatement() {
     consume(TokenType::LEFT_PAREN, "Expected '(' after 'while'.");
     auto condition = parseExpression();
@@ -107,9 +146,30 @@ std::unique_ptr<Expr> Parser::parseUnary() {
         // This is now active and will create the UnaryExpr node
         return std::make_unique<UnaryExpr>(op, std::move(right));
     }
-    return parsePrimary();
+    return parseCall();
 }
 
+std::unique_ptr<Expr> Parser::parseCall(){
+    auto expr = parsePrimary();
+    while (true) {
+        if (match({TokenType::LEFT_PAREN})) {
+            std::vector<std::unique_ptr<Expr>> arguments;
+            if (!check(TokenType::RIGHT_PAREN)) {
+                do {
+                    if (arguments.size() >= 255) {
+                        throw std::runtime_error("Cannot have more than 255 arguments.");       
+                    }
+                    arguments.push_back(parseExpression());
+                } while (match({TokenType::COMMA}));
+            }
+            Token paren = consume(TokenType::RIGHT_PAREN, "Expected ')' after arguments.");
+            expr = std::make_unique<CallExpr>(std::move(expr), paren, std::move(arguments));
+        } else{
+            break;
+        }
+    }
+    return expr;
+}
 
 
 // NEW: Handles == and !=

@@ -50,6 +50,9 @@ std::vector<Token> Lexer::tokenize() {
             case '\n':
                 // Ignore whitespace
                 break;
+            case ',' : 
+                tokens.emplace_back(TokenType::COMMA, ",");
+                break;
             case '+':
                 tokens.emplace_back(TokenType::PLUS, "+");
                 break;

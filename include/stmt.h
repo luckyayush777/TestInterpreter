@@ -91,6 +91,36 @@ class WhileStmt : public Stmt {
         }
     }
 };
+
+class FunctionStmt : public Stmt {
+    public :
+    Token name;
+    std::vector<Token> params; // Function parameters
+    std::vector<std::unique_ptr<Stmt>> body; // vector of statements in the function body
+
+    FunctionStmt(Token name, std::vector<Token> params, std::vector<std::unique_ptr<Stmt>> body)
+        : name(std::move(name)), params(std::move(params)), body(std::move(body)) {}
+
+    void execute(std::shared_ptr<Environment> env) override;
+};
+
+class ReturnStmt : public Stmt {
+    public :
+    Token keyword; // The 'return' keyword token
+    std::unique_ptr<Expr> value; // The return value expression
+
+    ReturnStmt(Token keyword, std::unique_ptr<Expr> value) : 
+        keyword(std::move(keyword)), value(std::move(value)) {}
+
+    void execute(std::shared_ptr<Environment> env) override {
+        Value val = nullptr;
+        if (value) {
+            throw ReturnValue(value->evaluate(env));
+        } else {
+            throw ReturnValue(nullptr); // Return nil if no value is provided
+        }
+    }
+};
 class PrintStmt : public Stmt {
     public :
     std::unique_ptr<Expr> expression;
@@ -102,5 +132,13 @@ class PrintStmt : public Stmt {
         std::cout << valueToString(value) << std::endl;
     }
 };
+
+
+struct ReturnValue{
+    Value value;
+
+    explicit ReturnValue(Value val) : value(std::move(val)) {}
+};
+
 
 
