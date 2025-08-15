@@ -118,7 +118,6 @@ Value CallExpr::evaluate(std::shared_ptr<Environment> env) {
     }
 
     auto function = std::get<std::shared_ptr<Callable>>(calleeValue);
-    std::vector<Value> args;
     if(args.size() != function->arity()) {
         throw std::runtime_error("Expected " + std::to_string(function->arity()) + 
         " arguments but got " + std::to_string(args.size()) + ".");
