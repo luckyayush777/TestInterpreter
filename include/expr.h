@@ -64,11 +64,12 @@ struct AssignmentExpr : public Expr {
 };
 
 struct CallExpr : public Expr {
-    Token callee; // The function name
-    std::vector<std::unique_ptr<Expr>> arguments; // Arguments to the function
+    std::unique_ptr<Expr> callee; // This can be any expression
+    Token paren; // The closing parenthesis for error reporting
+    std::vector<std::unique_ptr<Expr>> arguments;
 
-    CallExpr(Token callee, std::vector<std::unique_ptr<Expr>> arguments)
-        : callee(std::move(callee)), arguments(std::move(arguments)) {}
+    CallExpr(std::unique_ptr<Expr> callee, Token paren, std::vector<std::unique_ptr<Expr>> arguments)
+        : callee(std::move(callee)), paren(std::move(paren)), arguments(std::move(arguments)) {}
 
-    Value evaluate(std::shared_ptr<Environment> env) override; // Implementation in expr.cpp
+    Value evaluate(std::shared_ptr<Environment> env) override;
 };

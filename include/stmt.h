@@ -112,14 +112,15 @@ class ReturnStmt : public Stmt {
     ReturnStmt(Token keyword, std::unique_ptr<Expr> value) : 
         keyword(std::move(keyword)), value(std::move(value)) {}
 
+    // Suggested change for include/stmt.h
     void execute(std::shared_ptr<Environment> env) override {
         Value val = nullptr;
-        if (value) {
-            throw ReturnValue(value->evaluate(env));
-        } else {
-            throw ReturnValue(nullptr); // Return nil if no value is provided
+        if (value) { // If there is a return expression, evaluate it.
+        val = value->evaluate(env);
         }
-    }
+    // Throw the result (either the evaluated value or nil).
+    throw ReturnValue(val);
+}
 };
 class PrintStmt : public Stmt {
     public :
