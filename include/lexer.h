@@ -57,6 +57,8 @@ class Lexer{
 
     
     bool match(char expected);
+
+    Token string();
 };
 
 

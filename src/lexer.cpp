@@ -109,6 +109,9 @@ std::vector<Token> Lexer::tokenize() {
             case ';':
                 tokens.emplace_back(TokenType::SEMICOLON, ";");
                 break;
+            case '"':
+                tokens.push_back(string());
+                break;
             default:
                 if (isdigit(c) || (c == '.')) {
                     tokens.push_back(number(c));
@@ -130,4 +133,19 @@ bool Lexer::match(char expected) {
     }
     current++;
     return true;
+}
+
+
+Token Lexer::string() {
+    std::string value;
+    while(peek() != '"' && !isAtEnd()) {
+        value += advance();
+    }
+    if(isAtEnd()) {
+        throw std::runtime_error("Unterminated string literal");
+    }
+
+    advance(); // Consume the closing quote
+    return Token(TokenType::STRING, "\"" + value + "\"", value);
+
 }
