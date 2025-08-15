@@ -1,63 +1,75 @@
 # TestInterpreter
 
-A lightweight C++ interpreter for a small, expression-oriented language. 
-This project is inspired by *Crafting Interpreters* but uses modern C++ features 
-like `std::variant`, smart pointers, and RAII for safety and clarity.
+A modern C++17 interpreter for a small, dynamically typed, expression-oriented language.  
+Inspired by *Crafting Interpreters* but reimplemented with **RAII**, `std::variant`, smart pointers, and idiomatic STL usage for memory safety and clarity.
 
 ## Features
 
-### Implemented
+### ✅ Implemented
 - **Lexical Analysis** (`lexer.h` / `lexer.cpp`)
-  - Tokenizes input source into a `Token` stream.
-  - Supports identifiers, keywords, numbers, operators, and braces.
-- **Parsing** (`parser.h` / `parser.cpp`)
-  - Recursive descent parser with clear operator precedence.
-  - Handles expressions, variable declarations, blocks, and `if`/`else` statements.
-- **AST Evaluation** (`expr.h` / `expr.cpp`, `stmt.h`)
-  - Expression nodes: literals, variables, assignments, unary, binary.
-  - Statement nodes: expression statements, variable declarations, blocks, conditionals.
-- **Environments / Scopes** (`environment.h` / `environment.cpp`)
-  - Lexical scoping with nested environments.
-  - Variable definition, lookup, and assignment.
+  - Tokenizes source into a stream of `Token` objects.
+  - Supports identifiers, keywords, numbers, strings, operators, grouping, and blocks.
+  - Recognizes reserved keywords (`if`, `else`, `while`, `fun`, `return`, `var`, `print`, etc.).
+- **Parser** (`parser.h` / `parser.cpp`)
+  - Recursive descent parser with correct operator precedence.
+  - Handles:
+    - Literals (number, string, `true`, `false`, `nil`)
+    - Unary/binary operations (`-`, `+`, `*`, `/`, `!`, comparisons, equality)
+    - Variable declarations & assignments
+    - Blocks and nested scopes
+    - Conditional statements (`if` / `else`)
+    - Loops (`while`)
+    - Function declarations and calls (with closures)
+    - `return` statements
+    - `print` statements
+- **AST Evaluation** (`expr.*`, `stmt.*`)
+  - Expression and statement execution with runtime type checks.
+  - Supports first-class functions with lexical scoping.
+- **Environments** (`environment.*`)
+  - Lexical scoping via chained environments.
+  - Variable definition, lookup, and reassignment.
 - **REPL & File Execution** (`main.cpp`)
-  - Interactive mode for quick experiments.
-  - Script mode for running `.txt` or `.lox`-style files.
+  - Interactive prompt for quick experimentation.
+  - Script execution from file.
 
-### Planned / Incomplete
-- String literal parsing.
-- `print` statement instead of hardcoded expression output.
+### 🚧 Planned
+- Better error recovery (currently halts on first error).
 - Grouping expression AST node.
-- Error recovery (currently stops at first error).
-- Better number formatting.
-- Removal of unused `TokenType::NUMBER_LITERAL`.
+- More built-in functions.
+- Improved number formatting.
+
+---
 
 ## Example
 
 ### Source
-```
-var b = 1;
-if (b > 5) {
-  b = 99;
-} else {
-  b = -1;
+```lox
+fun my_fun() {
+  var a = "inner";
+  print a;
 }
-b;
+
+var a = "outer";
+my_fun();
+print a;
 ```
 
 ### Output
 ```
---- TOKENS ---
-Type: VAR  Lexeme: 'var'
+Tokens:
+Type: FUNCTION   Lexeme: 'fun'
 ...
-----------------
-Result : -1
+true
+outer
 ```
+
+---
 
 ## Build Instructions
 
 ### Prerequisites
-- CMake >= 3.10
-- C++17 compatible compiler (GCC, Clang, MSVC)
+- **CMake** ≥ 3.10
+- **C++17** compiler (GCC, Clang, or MSVC)
 
 ### Steps
 ```bash
@@ -68,24 +80,31 @@ cmake ..
 make
 ```
 
-### Run
-Interactive REPL:
+---
+
+## Running
+
+### Interactive Mode (REPL)
 ```bash
 ./TestInterpreter
 ```
 
-Run script file:
+### Run from File
 ```bash
 ./TestInterpreter path/to/script.txt
 ```
+
+---
 
 ## Project Structure
 ```
 TestInterpreter/
 ├── CMakeLists.txt
 ├── include/
+│   ├── callable.h
 │   ├── environment.h
 │   ├── expr.h
+│   ├── function.h
 │   ├── lexer.h
 │   ├── parser.h
 │   ├── stmt.h
@@ -94,6 +113,7 @@ TestInterpreter/
 ├── src/
 │   ├── environment.cpp
 │   ├── expr.cpp
+│   ├── function.cpp
 │   ├── lexer.cpp
 │   ├── main.cpp
 │   ├── parser.cpp
@@ -102,6 +122,8 @@ TestInterpreter/
 ├── test.txt
 └── README.md
 ```
+
+---
 
 ## License
 MIT License — free to use, modify, and distribute.
