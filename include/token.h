@@ -3,6 +3,7 @@
 #include <string> 
 #include <vector>
 #include <variant>
+#include <memory>
 
 // This is the single, canonical definition of the Value type.
 using Value = std::variant<std::nullptr_t, bool, double, std::string, std::shared_ptr<class Callable>>;

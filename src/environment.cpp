@@ -1,4 +1,5 @@
 #include "environment.h"
+#include <stdexcept>
 
 Environment::Environment(std::shared_ptr<Environment> parent) : enclosing(parent) {}
 void Environment::define(const std::string& name, const Value& val) {
